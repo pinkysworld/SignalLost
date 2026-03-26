@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Lost — Tactical Radio Strategy Game for iOS</title>
+    <meta name="description" content="Build relay stations, fight the elements, and restore communication across the wilderness. A premium puzzle-strategy game for iPhone and iPad.">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta property="og:title" content="Signal Lost — Tactical Radio Strategy Game">
+    <meta property="og:description" content="Build relay stations, fight the elements, and restore communication across the wilderness.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d0d1a;
+            --bg-secondary: #141428;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #22223a;
+            --accent: #e8a030;
+            --accent-glow: rgba(232, 160, 48, 0.15);
+            --text-primary: #e8e6e0;
+            --text-secondary: #9a9890;
+            --text-dim: #605e58;
+            --border: #2a2a40;
+            --signal-green: #4ade80;
+            --signal-blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Nav --- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(13, 13, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+        .nav-logo span { color: var(--text-dim); }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        /* --- Hero --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 50% 40%, rgba(232, 160, 48, 0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse at 30% 70%, rgba(96, 165, 250, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; max-width: 700px; }
+        .hero-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(232, 160, 48, 0.3);
+            padding: 0.35rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            background: var(--accent-glow);
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+        .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.75rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #1a1a2e;
+        }
+        .btn-primary:hover {
+            background: #f0b048;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(232, 160, 48, 0.25);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            border-color: var(--text-dim);
+            background: var(--bg-card);
+        }
+        .btn svg { width: 20px; height: 20px; }
+
+        /* --- Sections --- */
+        section {
+            padding: 5rem 2rem;
+        }
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 560px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+        }
+
+        /* --- Features Grid --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.25s;
+        }
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(232, 160, 48, 0.2);
+            transform: translateY(-2px);
+        }
+        .feature-icon {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .feature-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* --- Biomes --- */
+        .biomes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+        .biome-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.25s;
+        }
+        .biome-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        .biome-emoji { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .biome-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+        .biome-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* --- Equipment --- */
+        .equip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        .equip-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .equip-item .equip-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+        .equip-item h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .equip-item p { color: var(--text-secondary); font-size: 0.8rem; }
+
+        /* --- Stats --- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* --- Privacy Banner --- */
+        .privacy-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            max-width: 800px;
+        }
+        .privacy-banner .shield { font-size: 2rem; flex-shrink: 0; }
+        .privacy-banner h3 { margin-bottom: 0.5rem; }
+        .privacy-banner p { color: var(--text-secondary); font-size: 0.9rem; }
+        .privacy-list {
+            list-style: none;
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+        }
+        .privacy-list li {
+            color: var(--signal-green);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .privacy-list li::before {
+            content: '✓ ';
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-left {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .footer-left a { color: var(--text-secondary); text-decoration: none; }
+        .footer-left a:hover { color: var(--text-primary); }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* --- Responsive --- */
+        @media (max-width: 640px) {
+            .nav-links { gap: 1rem; }
+            .privacy-banner { flex-direction: column; }
+            .footer-inner { flex-direction: column; text-align: center; }
+            .features-grid { grid-template-columns: 1fr; }
+            section { padding: 3.5rem 1.25rem; }
+        }
+
+        /* --- Animations --- */
+        @media (prefers-reduced-motion: no-preference) {
+            .fade-in {
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeUp 0.6s ease forwards;
+            }
+            @keyframes fadeUp {
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .delay-1 { animation-delay: 0.1s; }
+            .delay-2 { animation-delay: 0.2s; }
+            .delay-3 { animation-delay: 0.3s; }
+        }
+
+        /* --- Signal animation --- */
+        .signal-bar {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--accent) 20%,
+                var(--accent) 30%,
+                transparent 50%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: signalSweep 3s ease-in-out infinite;
+            margin: 3rem 0;
+            opacity: 0.5;
+        }
+        @keyframes signalSweep {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">SIGNAL<span>_</span>LOST</a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#biomes">Biomes</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="support.html">Support</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-badge fade-in">Premium Strategy Game for iOS</span>
+        <h1 class="fade-in delay-1">Build the signal.<br>Beat the clock.<br><em>Save every voice.</em></h1>
+        <p class="fade-in delay-2">Place relay stations, manage power systems, and fight the elements to restore radio communication across the wilderness. A handcrafted tactical puzzle for iPhone and iPad.</p>
+        <div class="cta-group fade-in delay-3">
+            <a href="#" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download on the App Store
+            </a>
+            <a href="#features" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<div class="signal-bar"></div>
+
+<!-- Features -->
+<section id="features">
+    <div class="section-inner">
+        <p class="section-label">Gameplay</p>
+        <h2 class="section-title">More than a puzzle. A survival network.</h2>
+        <p class="section-desc">Every settlement depends on your signal chain. Design modular relay stations, adapt to dynamic weather, and keep the network alive against the elements.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">📡</span>
+                <h3>Realistic Signal Propagation</h3>
+                <p>Radio signals follow line-of-sight physics. Terrain blocks, distance attenuates, and weather disrupts. Build multi-hop relay chains to reach isolated settlements.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔧</span>
+                <h3>Modular Equipment System</h3>
+                <p>Configure each station with 5 component types — transmitters, antennas, power sources, housing, and frequency modules. Every combination creates a different strategy.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⛈️</span>
+                <h3>Dynamic Weather &amp; Day/Night</h3>
+                <p>Thunderstorms triple signal attenuation. Solar panels die at night. Wind turbines thrive in storms. Adapt your network to survive every condition.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🗺️</span>
+                <h3>40 Campaign Maps</h3>
+                <p>Two chapters of handcrafted maps with escalating difficulty. Earn up to 3 stars per map. Unlock new biomes and equipment as you progress.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎲</span>
+                <h3>Daily Challenges</h3>
+                <p>A new procedurally-generated map every day. Compete on Game Center leaderboards to prove you're the best network operator.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Privacy First</h3>
+                <p>No ads. No tracking. No analytics. No in-app purchases. Buy once, play forever. Your data stays on your device.</p>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div>
+                <span class="stat-value">40</span>
+                <span class="stat-label">Campaign Maps</span>
+            </div>
+            <div>
+                <span class="stat-value">4</span>
+                <span class="stat-label">Unique Biomes</span>
+            </div>
+            <div>
+                <span class="stat-value">∞</span>
+                <span class="stat-label">Daily Challenges</span>
+            </div>
+            <div>
+                <span class="stat-value">8</span>
+                <span class="stat-label">Achievements</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="signal-bar"></div>
+
+<!-- Biomes -->
+<section id="biomes">
+    <div class="section-inner">
+        <p class="section-label">Environments</p>
+        <h2 class="section-title">Four biomes. Four new challenges.</h2>
+        <p class="section-desc">Each environment changes how you build, plan, and survive. Unique terrain, weather patterns, and visual design across every biome.</p>
+
+        <div class="biomes-grid">
+            <div class="biome-card">
+                <span class="biome-emoji">🏔️</span>
+                <h3>Alpine</h3>
+                <p>High ridges and broken valleys. Snow-covered peaks block signals. Mountain winds test your equipment at every turn.</p>
+            </div>
+            <div class="biome-card">
+                <span class="biome-emoji">🏜️</span>
+                <h3>Desert</h3>
+                <p>Heat shimmer and exposed mesas. Sand dunes swallow signals. Solar panels thrive by day but leave you dark at night.</p>
+            </div>
+            <div class="biome-card">
+                <span class="biome-emoji">🌊</span>
+                <h3>Coastal</h3>
+                <p>Salt air, tides, and brittle cliffs. Fog banks disrupt transmissions. Balance deep-water crossings with fragile shoreline routes.</p>
+            </div>
+            <div class="biome-card">
+                <span class="biome-emoji">❄️</span>
+                <h3>Tundra</h3>
+                <p>Frozen ground under thin light. Ice storms cripple unprotected stations. The most demanding environment for any operator.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="signal-bar"></div>
+
+<!-- Equipment Showcase -->
+<section id="equipment">
+    <div class="section-inner">
+        <p class="section-label">Engineering</p>
+        <h2 class="section-title">Five components. Infinite strategies.</h2>
+        <p class="section-desc">Every relay station you build is a unique combination of transmitter, antenna, power, housing, and frequency module.</p>
+
+        <div class="equip-grid">
+            <div class="equip-item">
+                <p class="equip-label">Transmitter</p>
+                <h4>5W → 25W</h4>
+                <p>Basic to high-power output</p>
+            </div>
+            <div class="equip-item">
+                <p class="equip-label">Antenna</p>
+                <h4>Dipole · Yagi · Dish</h4>
+                <p>Omni to directional gain</p>
+            </div>
+            <div class="equip-item">
+                <p class="equip-label">Power</p>
+                <h4>Battery · Solar · Wind</h4>
+                <p>Each excels in different weather</p>
+            </div>
+            <div class="equip-item">
+                <p class="equip-label">Housing</p>
+                <h4>Open → Hardened</h4>
+                <p>Trade cost for durability</p>
+            </div>
+            <div class="equip-item">
+                <p class="equip-label">Frequency</p>
+                <h4>VHF · UHF · HF</h4>
+                <p>Range vs. weather resistance</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="signal-bar"></div>
+
+<!-- Privacy Section -->
+<section id="privacy-section">
+    <div class="section-inner">
+        <p class="section-label">Privacy</p>
+        <h2 class="section-title">Your game. Your data. Period.</h2>
+        <div class="privacy-banner">
+            <span class="shield">🛡️</span>
+            <div>
+                <h3>Zero data collection</h3>
+                <p>Signal Lost is a premium game with no hidden costs. We believe your gaming experience should be private.</p>
+                <ul class="privacy-list">
+                    <li>No ads</li>
+                    <li>No tracking</li>
+                    <li>No analytics</li>
+                    <li>No in-app purchases</li>
+                    <li>No account required</li>
+                    <li>100% offline capable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            &copy; 2026 Signal Lost &middot; <a href="mailto:mip@gmx.biz">mip@gmx.biz</a>
+        </div>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="support.html">Support</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

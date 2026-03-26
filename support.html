@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — Signal Lost</title>
+    <meta name="description" content="Get help and support for Signal Lost iOS game.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d0d1a;
+            --bg-secondary: #141428;
+            --bg-card: #1a1a2e;
+            --accent: #e8a030;
+            --accent-glow: rgba(232, 160, 48, 0.15);
+            --text-primary: #e8e6e0;
+            --text-secondary: #9a9890;
+            --text-dim: #605e58;
+            --border: #2a2a40;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        nav {
+            background: rgba(13, 13, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+        .nav-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .nav-logo span { color: var(--text-dim); }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+        }
+        .page-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+        }
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+        p, li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+        a { color: var(--accent); }
+
+        /* Contact Card */
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .contact-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(232, 160, 48, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.5rem;
+        }
+        .contact-card h2 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        .contact-card p {
+            margin-bottom: 1.5rem;
+        }
+        .email-button {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .email-button:hover { opacity: 0.85; }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .faq-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .faq-item p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        footer a { color: var(--text-secondary); text-decoration: none; }
+        footer a:hover { color: var(--text-primary); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">SIGNAL<span>_</span>LOST</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="privacy.html">Privacy</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <p class="page-label">Help</p>
+    <h1>Support</h1>
+    <p class="subtitle">Having trouble or found a bug? We're here to help.</p>
+
+    <div class="contact-card">
+        <div class="contact-icon">📡</div>
+        <h2>Get in Touch</h2>
+        <p>For bug reports, feature suggestions, or any questions about Signal Lost, send us an email and we'll get back to you as soon as possible.</p>
+        <a href="mailto:mip@gmx.biz" class="email-button">mip@gmx.biz</a>
+    </div>
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+        <h3>How do I save my progress?</h3>
+        <p>Signal Lost saves your progress automatically. Campaign map completion, star ratings, equipment unlocks, story fragments, and daily challenge scores are all stored locally on your device.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>What do the equipment abbreviations mean?</h3>
+        <p>Each relay component has an abbreviated label. Long-press any equipment item in the inventory panel to see its full name and description. For example, BAS = Basic Transmitter, DIP = Dipole Antenna, BAT = Battery Pack.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>How do I earn more stars on a map?</h3>
+        <p>Stars are awarded based on your final score. Focus on maximizing signal coverage, connecting all target nodes, keeping relays alive through weather events, and finishing efficiently. Each map has unique challenges — experiment with different equipment loadouts and relay placements.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>What are Daily Challenges?</h3>
+        <p>A new procedurally generated map is available every day with a unique seed. Everyone gets the same map — compete on the Game Center leaderboard for the highest score. Your best daily scores are tracked in your profile.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>Does Signal Lost require an internet connection?</h3>
+        <p>No. The game works entirely offline. An internet connection is only needed if you want to submit scores to Game Center leaderboards or sync achievements.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>How do I unlock new equipment?</h3>
+        <p>Equipment is unlocked by progressing through the campaign. Completing maps and chapters rewards you with new transmitters, antennas, power sources, housings, and frequency modules — each with unique stats that affect signal strength, range, and durability.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>I lost my progress. Can it be recovered?</h3>
+        <p>Since all data is stored locally on your device, progress cannot be recovered after uninstalling the app or resetting your device. We recommend keeping regular device backups via iCloud or your computer.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3>Is there a colorblind mode?</h3>
+        <p>Yes. Go to Settings within the app to enable colorblind-friendly visuals. You can also enable reduced motion if you prefer less animation.</p>
+    </div>
+</main>
+
+<footer>
+    &copy; 2026 Signal Lost &middot; <a href="privacy.html">Privacy Policy</a> &middot; <a href="mailto:mip@gmx.biz">mip@gmx.biz</a>
+</footer>
+
+</body>
+</html>
